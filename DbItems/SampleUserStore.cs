@@ -55,7 +55,6 @@ namespace SampleApp.DbItems
                 INSERT INTO Users (Id, UserName, NormalizedUserName, PasswordHash, DisplayName, ConcurrencyStamp, SecurityStamp)
                 VALUES ($id, $userName, $normalizedUserName, $passwordHash, $displayName, $concurrencyStamp, $securityStamp)";
                 FillParams(command, user);
-                Console.WriteLine("Executing SQL Command: " + command.ToString());
                 await command.ExecuteNonQueryAsync(cancellationToken);
                 return IdentityResult.Success;
             }
