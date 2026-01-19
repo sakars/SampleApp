@@ -1,0 +1,33 @@
+﻿@page "/login"
+@model LoginModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h2>Login</h2>
+
+<form method="post" asp-page-handler="Login">
+    <div>
+        <label asp-for="Login.UserName"></label>
+        <input asp-for="Login.UserName" />
+        <span asp-validation-for="Login.UserName"></span>
+    </div>
+
+    <div>
+        <label asp-for="Login.Password"></label>
+        <input asp-for="Login.Password" type="password" />
+        <span asp-validation-for="Login.Password"></span>
+    </div>
+
+    <div>
+        <input asp-for="Login.RememberMe" />
+        <label asp-for="Login.RememberMe"></label>
+    </div>
+
+    <button type="submit">Login</button>
+</form>
+
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <p style="color:red">@Model.ErrorMessage</p>
+}
+

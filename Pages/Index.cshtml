@@ -1,0 +1,29 @@
+﻿@page
+
+@model IndexModel
+
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<SampleApp.DbItems.SampleUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if(user == null)
+    {
+        <p> You are not logged in. </p>
+    }
+    else
+    {
+        <p> You are logged in as @user.DisplayName (@user.UserName). </p>
+    }
+</div>
+

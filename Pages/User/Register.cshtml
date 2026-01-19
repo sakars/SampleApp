@@ -1,0 +1,30 @@
+﻿@page
+@model SampleApp.Pages.RegisterModel
+@{
+}
+
+
+
+<h2>Sign Up</h2>
+
+<form method="post" asp-page-handler="Register">
+    <div>
+        <label asp-for="Register.UserName"></label>
+        <input asp-for="Register.UserName" />
+        <span asp-validation-for="Register.UserName"></span>
+    </div>
+
+    <div>
+        <label asp-for="Register.Password"></label>
+        <input asp-for="Register.Password" type="password" />
+        <span asp-validation-for="Register.Password"></span>
+    </div>
+
+    <div>
+        <label asp-for="Register.ConfirmPassword"></label>
+        <input asp-for="Register.ConfirmPassword" type="password" />
+        <span asp-validation-for="Register.ConfirmPassword"></span>
+    </div>
+
+    <button type="submit">Sign Up</button>
+</form>

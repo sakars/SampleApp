@@ -1,0 +1,30 @@
+﻿@page
+@model SampleApp.Pages.User.ProfileModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<SampleApp.DbItems.SampleUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    if (user == null)
+    {
+        Response.Redirect("/User/Login");
+    }
+}
+
+
+<h2>User Profile</h2>
+
+<div>
+    <form method="post" >
+        <div><strong>Username:</strong> @user?.UserName</div>
+        <div>
+            <label asp-for="UsernameData.DisplayName"></label>
+            <input asp-for="UsernameData.DisplayName" value="@user?.DisplayName" />
+            <span asp-validation-for="UsernameData.DisplayName"></span>
+        </div>
+        <button type="submit">Update Profile</button>
+    </form>
+</div>
+
+<a asp-page="/Index">Back to Home</a>
+
