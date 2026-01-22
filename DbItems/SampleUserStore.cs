@@ -232,6 +232,45 @@ namespace SampleApp.DbItems
             return IdentityResult.Failed();
         }
 
+        public async Task<IDictionary<Guid, SampleUser>> GetUserListAsync(IList<Guid> ids, CancellationToken cancellationToken)
+        {
+            Dictionary<Guid, SampleUser> users = new Dictionary<Guid, SampleUser>();
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync(cancellationToken);
+            try
+            {
+                using SqliteCommand command = connection.CreateCommand();
+                command.CommandText = @"
+                SELECT Id, UserName, NormalizedUserName, PasswordHash, DisplayName, ConcurrencyStamp, SecurityStamp
+                FROM Users
+                WHERE Id IN (" + string.Join(",", ids.Select((_, index) => $"$id{index}")) + ")";
+                for (int i = 0; i < ids.Count; i++)
+                {
+                    command.Parameters.AddWithValue($"$id{i}", ids[i].ToString());
+                }
+                using SqliteDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
+                while (await reader.ReadAsync(cancellationToken))
+                {
+                    SampleUser user = new SampleUser
+                    {
+                        Id = Guid.Parse(reader.GetString(0)),
+                        UserName = reader.GetString(1),
+                        NormalizedUserName = reader.GetString(2),
+                        PasswordHash = reader.GetString(3),
+                        DisplayName = reader.GetString(4),
+                        ConcurrencyStamp = reader.GetString(5),
+                        SecurityStamp = reader.GetString(6)
+                    };
+                    users.Add(user.Id, user);
+                }
+            }
+            finally
+            {
+                await connection.CloseAsync();
+            }
+            return users;
+        }
+
 
 
     }

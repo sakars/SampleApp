@@ -1,0 +1,58 @@
+﻿@page
+@model SampleApp.Pages.HistoryModel
+@{
+}
+
+<h1>Past games</h1>
+
+@foreach(var game in Model.GameItems)
+{
+    <div>
+        <h2>@game.Name</h2>
+        <p>
+            <b>@game.Id</b>
+            <span>@game.StatusString</span>
+            @if (
+                game.Status == DbItems.GameData.GameStatus.X_Won && game.PlayerXId == Model.CurrentUser.Id ||
+                game.Status == DbItems.GameData.GameStatus.O_Won && game.PlayerOId == Model.CurrentUser.Id)
+            {
+                <span> - You won!</span>
+            }
+            @if (
+                game.Status == DbItems.GameData.GameStatus.X_Won && game.PlayerOId == Model.CurrentUser.Id ||
+                game.Status == DbItems.GameData.GameStatus.O_Won && game.PlayerXId == Model.CurrentUser.Id)
+            {
+                <span> - You lost.</span>
+            }
+            @if (game.Status == DbItems.GameData.GameStatus.Draw)
+            {
+                <span> - It was a draw.</span>
+            }
+        </p>
+        <table class="game">
+            @for (int row = 0; row < 3; row++)
+            {
+                <tr>
+                    @for (int col = 0; col < 3; col++)
+                    {
+                        <td>
+                            @if (game.Board[row, col] == DbItems.GameData.Field.Empty)
+                            {
+                                <div><span></span></div>
+                            }
+                            else if (game.Board[row, col] == DbItems.GameData.Field.X)
+                            {
+                                <div><span>X</span></div>
+                            }
+                            else if (game.Board[row, col] == DbItems.GameData.Field.O)
+                            {
+                                <div><span>O</span></div>
+                            }
+                        </td>
+
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+}

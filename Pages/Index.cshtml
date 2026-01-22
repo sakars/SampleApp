@@ -2,28 +2,101 @@
 
 @model IndexModel
 
-@using Microsoft.AspNetCore.Identity
-@inject UserManager<SampleApp.DbItems.SampleUser> UserManager
-
-@{
-    var user = await UserManager.GetUserAsync(User);
-}
 
 @{
     ViewData["Title"] = "Home page";
 }
 
+<p>Wins: @Model.WLD.Item1, Losses: @Model.WLD.Item2, Draws: @Model.WLD.Item3</p>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    @if(user == null)
+<h2>Create new game</h2>
+
+<form method="post" asp-page-handler="CreateGame">
+    <input asp-for="GameName" />
+    <button type="submit">Create Game</button>
+</form>
+
+
+<form method="post" asp-page-handler="Refresh">
+    <button type="submit" >Refresh</button>
+</form>
+
+@*Display errors*@
+@{
+    var blankModelState = ModelState[String.Empty];
+}
+@if (blankModelState != null)
+{
+    <div style="color:red">Operation failed with the following errors:</div>
+    @foreach (var error in blankModelState.Errors)
     {
-        <p> You are not logged in. </p>
+        <div style="color:red">@error.ErrorMessage</div>
     }
-    else
-    {
-        <p> You are logged in as @user.DisplayName (@user.UserName). </p>
-    }
-</div>
+}
+
+
+@foreach(var game in Model.GameItems)
+{
+    <div>
+        <h2>@game.Name</h2>
+        <p><b>@game.Id</b> @game.StatusString</p>
+        @if (game.PlayerXId == Model.CurrentUser.Id && game.Status == DbItems.GameData.GameStatus.X_Turn || game.PlayerOId == Model.CurrentUser.Id && game.Status == DbItems.GameData.GameStatus.O_Turn)
+        {
+            <table class="game">
+                @for (int row = 0; row < 3; row++)
+                {
+                    <tr>
+                        @for (int col = 0; col < 3; col++)
+                        {
+                            var cellValue = game.Board[row, col];
+                            if (cellValue == DbItems.GameData.Field.Empty)
+                            {
+                                <td>
+                                    <form method="post" asp-page-handler="MakeMove" class="cell-form">
+                                        <input type="hidden" asp-for="GameId" value="@game.Id" />
+                                        <input type="hidden" asp-for="Row" value="@row" />
+                                        <input type="hidden" asp-for="Col" value="@col" />
+                                        <button type="submit" class="cell-button">  </button>
+                                    </form>
+                                </td>
+                            }
+                            else
+                            {
+                                <td><div><span>@((cellValue == DbItems.GameData.Field.X) ? "X" : "O")</span></div></td>
+                            }
+                        }
+                    </tr>
+                }
+            </table>
+        } else
+        {
+            <table class="game">
+                @for (int row = 0; row < 3; row++)
+                {
+                    <tr>
+                        @for (int col = 0; col < 3; col++)
+                        {
+                            <td>
+                                @if (game.Board[row, col] == DbItems.GameData.Field.Empty)
+                                {
+                                    <div><span></span></div>
+                                }
+                                else if (game.Board[row, col] == DbItems.GameData.Field.X)
+                                {
+                                    <div><span>X</span></div>
+                                }
+                                else if (game.Board[row, col] == DbItems.GameData.Field.O)
+                                {
+                                    <div><span>O</span></div>
+                                }
+                            </td>
+                            
+                        }
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+}
+
 

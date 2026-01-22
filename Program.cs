@@ -3,9 +3,12 @@ using SampleApp.DbItems;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//--- Add services to the container. ---
+
+// Add Razor Pages services
 builder.Services.AddRazorPages();
 
+// Implement authentication and identity services
 builder.Services.AddAuthentication("Identity.Application")
        .AddCookie("Identity.Application", options =>
        {
@@ -15,14 +18,15 @@ builder.Services.AddAuthentication("Identity.Application")
        });
 
 builder.Services.AddAuthorization();
-
-
-builder.Services.AddScoped<IUserStore<SampleUser>, SampleUserStore>(serviceProvider =>
+builder.Services.AddScoped<SampleUserStore>(serviceProvider =>
 {
     var connectionString = serviceProvider.GetRequiredService<IConfiguration>()
         .GetConnectionString("DefaultConnection") ?? "Data Source=sampleapp.db";
     return new SampleUserStore(connectionString);
 });
+builder.Services.AddScoped<IUserStore<SampleUser>>(serviceProvider =>
+    serviceProvider.GetRequiredService<SampleUserStore>());
+
 builder.Services.AddIdentityCore<SampleUser>(options =>
 {
     // Configure password rules if you like
@@ -32,6 +36,11 @@ builder.Services.AddIdentityCore<SampleUser>(options =>
 })
     .AddSignInManager()
     .AddDefaultTokenProviders();
+
+// Add GameDataStore
+builder.Services.AddTransient<GameDataStore>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

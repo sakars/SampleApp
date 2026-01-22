@@ -1,0 +1,24 @@
+﻿body {
+}
+
+
+table, th, td {
+    border: 1px solid green;
+}
+
+
+
+td {
+    width: 3rem;
+    height: 3rem;
+}
+
+    td button {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    td div {
+        text-align: center;
+    }
+

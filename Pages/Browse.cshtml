@@ -1,0 +1,24 @@
+﻿@page
+@model SampleApp.Pages.BrowseModel
+@{
+}
+
+
+
+
+
+@foreach (var game in Model.GameItems)
+{
+    <div>
+        <h2>@game.Name</h2>
+        <p><b>@game.Id</b> @game.StatusString</p>
+        @if ((game.PlayerOId == null || game.PlayerXId == null) && (game.PlayerXId != Model.CurrentUser.Id && game.PlayerOId != Model.CurrentUser.Id))
+        {
+            <form method="post" asp-page-handler="JoinGame">
+                <input type="hidden" asp-for="GameId" value="@game.Id" />
+                <button type="submit">Join Game</button>
+            </form>
+        }
+        
+    </div>
+}
