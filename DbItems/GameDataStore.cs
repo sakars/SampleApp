@@ -246,9 +246,9 @@ namespace SampleApp.DbItems
             using var reader = command.ExecuteReader();
             reader.Read();
             return (
-                reader.GetInt32(0),
-                reader.GetInt32(1),
-                reader.GetInt32(2)
+                reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                reader.IsDBNull(0) ? 0 : reader.GetInt32(1),
+                reader.IsDBNull(0) ? 0 : reader.GetInt32(2)
             );
 
         }
