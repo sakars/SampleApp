@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SampleApp.DbItems;
 
-namespace SampleApp.Pages
+namespace SampleApp.Pages.Legacy
 {
     public class HistoryModel : PageModel
     {

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using SampleApp;
 using SampleApp.DbItems;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add Razor Pages services
 builder.Services.AddRazorPages();
+
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 // Implement authentication and identity services
 builder.Services.AddAuthentication("Identity.Application")
@@ -49,12 +53,16 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
 }
 app.UseStaticFiles();
+app.UseBlazorFrameworkFiles();
 
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAntiforgery();
 
 app.MapRazorPages();
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
 app.Run();

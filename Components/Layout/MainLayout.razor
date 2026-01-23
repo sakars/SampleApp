@@ -1,0 +1,104 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using SampleApp.DbItems
+
+@inherits LayoutComponentBase
+
+
+@inject UserManager<SampleUser> UserManager
+@inject AuthenticationStateProvider AuthStateProvider
+
+@code {
+    private SampleUser? _user;
+    private bool _signedIn => _user == null;
+
+    protected async override Task OnInitializedAsync()
+    {
+        var state = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (state == null)
+        {
+            _user = null;
+            return;
+        }
+        var user = await UserManager.GetUserAsync(state.User);
+        if (user == null)
+        {
+            _user = null;
+            return;
+        }
+        _user = user;
+    }
+}
+
+<HeadOutlet />
+
+<HeadContent>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css" />
+    <link rel="stylesheet" href="/SampleApp.styles.css" />
+</HeadContent>
+
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container">
+            <NavLink class="navbar-brand" href="/">SampleApp</NavLink>
+            
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <NavLink class="nav-link text-dark" href="/">Home</NavLink>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <NavLink class="nav-link text-dark" href="/Browse">Browse</NavLink>
+                    </li>
+                </ul>
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <NavLink class="nav-link text-dark" href="/History">History</NavLink>
+                    </li>
+                </ul>
+                <ul class="navbar-nav flex-grow-1 flex-row-reverse">
+                    @if (_signedIn)
+                    {
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-dark" href="/User/Logout">Logout</NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-dark" href="/User/Profile">@_user?.DisplayName</NavLink>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-dark" href="/User/Login">Login</NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-dark" href="/User/Register">Register</NavLink>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="page">
+
+    <main>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2026 - SampleApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    </div>
+</footer>
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/site.js"></script>
