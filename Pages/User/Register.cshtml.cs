@@ -47,10 +47,7 @@ namespace SampleApp.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            ModelState.Clear();
-            TryValidateModel(Register, nameof(Register));
-            if (!ModelState.IsValid)
-                return Page();
+
 
             var user = new SampleUser
             {

@@ -28,3 +28,8 @@
 
     <button type="submit">Sign Up</button>
 </form>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <p style="color:red">@Model.ErrorMessage</p>
+}
